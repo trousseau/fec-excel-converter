@@ -1,0 +1,6 @@
+C:\Users\tyler\Documents\GitHub\fec-excel-converter\FECToExcelConverter\bin\Debug\FECToExcelConverter.exe.config
+C:\Users\tyler\Documents\GitHub\fec-excel-converter\FECToExcelConverter\bin\Debug\FECToExcelConverter.exe
+C:\Users\tyler\Documents\GitHub\fec-excel-converter\FECToExcelConverter\bin\Debug\FECToExcelConverter.pdb
+C:\Users\tyler\Documents\GitHub\fec-excel-converter\FECToExcelConverter\obj\Debug\FECToExcelConverter.csprojResolveAssemblyReference.cache
+C:\Users\tyler\Documents\GitHub\fec-excel-converter\FECToExcelConverter\obj\Debug\FECToExcelConverter.exe
+C:\Users\tyler\Documents\GitHub\fec-excel-converter\FECToExcelConverter\obj\Debug\FECToExcelConverter.pdb
