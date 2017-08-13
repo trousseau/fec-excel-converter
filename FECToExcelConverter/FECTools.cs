@@ -41,86 +41,100 @@ namespace FECToExcelConverter
 
                 tempath = args[0];
 
-                if (Path.GetExtension(tempath) != ".fec")
+                try
                 {
-                    MessageBox.Show("Invalid File Extension");
-
-                    while (Path.GetExtension(path) != ".fec")
+                    if (Path.GetExtension(tempath) != ".fec")
                     {
-                        if (openDialog1.ShowDialog() == DialogResult.Cancel)
+                        MessageBox.Show("Invalid File Extension");
+
+                        while (Path.GetExtension(path) != ".fec")
                         {
-                            Environment.Exit(0);
-                        }
-                        tempath = openDialog1.FileName;
-                        if (Path.GetExtension(tempath) == ".fec")
-                        {
-                            path = openDialog1.FileName;
-                            exitMethod = 0;
-                        }
-                        else
-                        {
-                            MessageBox.Show("Invalid File Extension");
+                            if (openDialog1.ShowDialog() == DialogResult.Cancel)
+                            {
+                                Environment.Exit(0);
+                            }
+                            tempath = openDialog1.FileName;
+                            if (Path.GetExtension(tempath) == ".fec")
+                            {
+                                path = openDialog1.FileName;
+                                exitMethod = 0;
+                            }
+                            else
+                            {
+                                MessageBox.Show("Invalid File Extension");
+                            }
                         }
                     }
+                    else
+                    {
+                        path = args[0];
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    path = args[0];
+
+                    MessageBox.Show(e.Message);
                 }
             }
-
             return tempath;
         }
 
         public static string ParseFecFile(OpenFileDialog openDialog1, ref string path, string[] args, List<string> lines)
         {
-            string tempath = FECTools.OpenFilePath(args, ref path, openDialog1);
+            string tempath = OpenFilePath(args, ref path, openDialog1);
 
-            using (TextFieldParser parser1 = new TextFieldParser(path))
+            try
             {
-
-                parser1.SetDelimiters(new string[] { "\x1c" });
-                //parser1.HasFieldsEnclosedInQuotes = true;
-
-                while (!parser1.EndOfData)
+                using (TextFieldParser parser1 = new TextFieldParser(path))
                 {
-                    string[] fields = null;
+                    parser1.SetDelimiters(new string[] { "\x1c" });
 
-                    //fields = parser1.ReadFields();
-
-                    try
+                    while (!parser1.EndOfData)
                     {
-                        fields = parser1.ReadFields();
-                    }
-                    catch (Exception e)
-                    {
-                        MessageBox.Show(e.Message);
-                        break;
-                    }
+                        string[] fields = null;
 
+                        try
+                        {
+                            fields = parser1.ReadFields();
+                        }
+                        catch (Exception e)
+                        {
+                            MessageBox.Show(e.Message);
+                            break;
+                        }
 
-                    if (fields != null)
-                    {
-                        var newFields = fields
-                        //.Select(f => f.Contains(",") ? string.Format("\"{0}\"", f) : f); //only quotes fields with comma
-                        .Select(f => f.Replace("\"", "")).Select(f => string.Format("\"{0}\"", f));
-                        //.Select(f => string.Format("\"{0}\"", f)); //quotes all fields
-                        lines.Add(string.Join(",", newFields));
+                        if (fields != null)
+                        {
+                            var newFields = fields
+                            .Select(f => f.Replace("\"", "")).Select(f => string.Format("\"{0}\"", f));
+                            lines.Add(string.Join(",", newFields));
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
             }
             return tempath;
         }
 
         public static byte SaveFecFile(List<string> lines,string path, SaveFileDialog saveDialog1)
         {
-            var formattedCsvToSave = String.Join(Environment.NewLine, lines.Select(x => x));
-
-            string savePath = Path.GetFileNameWithoutExtension(path);
-
+            var formattedCsvToSave = string.Empty;
+            string savePath = string.Empty;
             string saveFilePath = null;
-
             byte saveCount = 1;
+
+            try
+            {
+                formattedCsvToSave = String.Join(Environment.NewLine, lines.Select(x => x));
+                savePath = Path.GetFileNameWithoutExtension(path);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
 
             while (saveCount != 0)
             {
@@ -141,7 +155,16 @@ namespace FECToExcelConverter
                     MessageBox.Show(e.Message);
                 }
             }
-            File.WriteAllText(saveFilePath, formattedCsvToSave);
+
+            try
+            {
+                File.WriteAllText(saveFilePath, formattedCsvToSave);
+            }
+            catch (Exception e)
+            {
+
+                MessageBox.Show(e.Message);
+            }
 
             MessageBox.Show("CSV Saved Successfully");
             return 0;
